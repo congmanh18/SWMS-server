@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"smart-waste-system/internal/app/handlers"
 	"smart-waste-system/internal/app/models"
 	"smart-waste-system/internal/app/repository"
 	"smart-waste-system/internal/routes"
@@ -45,10 +44,12 @@ func main() {
 
 	fmt.Println("NGUYEN CONG MANH")
 
-	repo := repository.NewUserRepository(db)
-	userHandler := handlers.NewUserHandler(repo)
+	repo := &repository.Repository{
+		DB: db,
+	}
 
 	app := fiber.New()
-	routes.UserRoutes(app, userHandler)
+
+	routes.UserRoutes(app, repo)
 	log.Fatal(app.Listen(":1234"))
 }

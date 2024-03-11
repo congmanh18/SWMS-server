@@ -1,13 +1,16 @@
 package routes
 
 import (
-	"smart-waste-system/internal/app/handlers"
+	"smart-waste-system/internal/app/repository"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func UserRoutes(app *fiber.App, uh *handlers.UserHandler) {
-	app.Post("/users/register", uh.Register)
-	app.Post("/users/login", uh.Login)
-	app.Get("/users/:id", uh.ViewInfo)
+func UserRoutes(app *fiber.App, uh *repository.Repository) {
+
+	handler := &repository.Handler{Repository: uh}
+
+	app.Post("/users/register", handler.Repository.)
+	app.Post("/users/login", handler.Repository.)
+	app.Get("/users/:id", handler.Repository.)
 }
