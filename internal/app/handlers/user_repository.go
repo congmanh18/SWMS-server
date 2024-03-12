@@ -1,4 +1,4 @@
-package repository
+package handlers
 
 import (
 	"net/http"
@@ -8,18 +8,9 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-type UserRepository struct {
-	Repository
-}
-
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{Repository: Repository{DB: db}}
-}
-
-func (ur *UserRepository) CreateAccount(ctx *fiber.Ctx, user models.User) error {
+func (ur *Repository) CreateAccount(ctx *fiber.Ctx, user models.User) error {
 	validationErr := validator.New().Struct(user)
 	if validationErr != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Validation failed")
@@ -44,7 +35,7 @@ func (ur *UserRepository) CreateAccount(ctx *fiber.Ctx, user models.User) error 
 }
 
 // Signin by phone number
-func (ur *UserRepository) SigninByPhoneNumber(ctx *fiber.Ctx, user models.User) (*models.User, error) {
+func (ur *Repository) SigninByPhoneNumber(ctx *fiber.Ctx, user models.User) (*models.User, error) {
 	foundUser := models.User{}
 
 	if err := ur.DB.Where("phone = ?", user.Phone).First(&foundUser).Error; err != nil {
@@ -66,7 +57,7 @@ func (ur *UserRepository) SigninByPhoneNumber(ctx *fiber.Ctx, user models.User) 
 	return &foundUser, nil
 }
 
-func (ur *UserRepository) GetUserByID(ctx *fiber.Ctx, userID string) (*models.User, error) {
+func (ur *Repository) GetUserByID(ctx *fiber.Ctx, userID string) (*models.User, error) {
 	user := models.User{}
 	if err := utils.MatchUserTypeToUID(ctx, userID); err != nil {
 		return nil, utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
@@ -79,7 +70,7 @@ func (ur *UserRepository) GetUserByID(ctx *fiber.Ctx, userID string) (*models.Us
 	return &user, nil
 }
 
-func (ur *UserRepository) EditInfo(ctx *fiber.Ctx, userID string, updatedInfo models.User) (*models.User, error) {
+func (ur *Repository) EditInfo(ctx *fiber.Ctx, userID string, updatedInfo models.User) (*models.User, error) {
 	user, err := ur.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, err
