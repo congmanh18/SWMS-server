@@ -1,15 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"smart-waste-system/internal/app/handlers"
-	"smart-waste-system/internal/app/models"
+	"smart-waste-system/internal/connections"
 
 	"smart-waste-system/internal/routes"
 
-	"smart-waste-system/internal/connections"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,15 +15,17 @@ import (
 )
 
 func main() {
+
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading env file")
+		log.Fatal(err)
 	}
 
 	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
 		log.Fatal("DB_PORT must be a valid integer")
 	}
+
 	sql := &connections.Sql{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     port,
@@ -38,19 +38,18 @@ func main() {
 	db, _ := sql.Connect()
 	defer sql.Close()
 
-	err = models.MigrateUser(db)
-	if err != nil {
-		log.Fatal("could not migrate db")
-	}
-
-	fmt.Println("NGUYEN CONG MANH")
+	// err = models.MigrateBooks(db)
+	// if err != nil {
+	// 	log.Fatal("could not migrate db")
+	// }
 
 	repo := &handlers.Repository{
 		DB: db,
 	}
 
+	// print(db)
 	app := fiber.New()
 	routes.UserRoutes(app, repo)
+	app.Listen(":3000")
 
-	log.Fatal(app.Listen(":1234"))
 }

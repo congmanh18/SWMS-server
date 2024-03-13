@@ -24,7 +24,7 @@ func (s *Sql) Connect() (*gorm.DB, error) {
 	if err != nil {
 		return db, err
 	}
-	fmt.Println("Smart-Waste-Management-System Conected Database")
+	fmt.Println("Conected Database")
 	return db, nil
 }
 
