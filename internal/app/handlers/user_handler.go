@@ -10,14 +10,29 @@ import (
 	"github.com/google/uuid"
 )
 
+func (uh *Repository) Muoba(context *fiber.Ctx) error {
+	user := models.User{}
+	user.ID = uuid.New().String()
+
+	err := context.BodyParser(&user)
+	fmt.Println(user)
+	if err != nil {
+		return utils.HandleErrorResponse(context, http.StatusUnprocessableEntity, "Request failed")
+	}
+	if err := uh.CreateAccount(context, user); err != nil {
+		return utils.HandleErrorResponse(context, http.StatusInternalServerError, "Failed to register user")
+	}
+
+	return context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "user has been added"})
+}
+
 func (uh *Repository) Register(ctx *fiber.Ctx) error {
 	user := models.User{}
 	user.ID = uuid.New().String()
 
-	// Đọc dữ liệu từ request body và chuyển đổi thành đối tượng User
 	err := ctx.BodyParser(&user)
 	fmt.Println(user)
-	fmt.Println(&user)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusUnprocessableEntity, "Invalid request payload")
 	}

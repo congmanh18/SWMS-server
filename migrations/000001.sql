@@ -12,7 +12,7 @@ CREATE TABLE "users" (
   "poo" text,
   "por" text,
   "email" text,
-  "username" text , 
+  "username" text, 
   "phone" text NOT NULL,
   "password" text,
   "category" text NOT NULL,
