@@ -9,7 +9,7 @@ CREATE TABLE "users" (
   "date_of_birth" date,
   "email" text,
   "username" text, 
-  "phone" text NOT NULL,
+  "phone" text ,
   "password" text,
   "category" text NOT NULL,
   "token" text,
