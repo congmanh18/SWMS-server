@@ -26,10 +26,8 @@ func (uh *Repository) Register(ctx *fiber.Ctx) error {
 
 	token, _ := utils.GenerateAllTokens(user.Phone, user.ID, *user.FirstName, *user.MiddleName, *user.LastName)
 	user.Token = &token
-
 	password := utils.HashPassword(*user.Password)
 	user.Password = &password
-
 	user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
@@ -38,7 +36,6 @@ func (uh *Repository) Register(ctx *fiber.Ctx) error {
 		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Could not create user")
 	}
 
-	// Trả về thành công nếu không có lỗi
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"info":    user,
 		"message": "register successfully"})
@@ -52,7 +49,7 @@ func (uh *Repository) Login(ctx *fiber.Ctx) error {
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusUnprocessableEntity, "Invalid request payload")
 	}
-	if err := uh.DB.Where("id = ?", user.ID).First(&foundUser).Error; err != nil {
+	if err := uh.DB.Where("phone = ?", user.Phone).First(&foundUser).Error; err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusUnprocessableEntity, err.Error())
 	}
 
@@ -69,28 +66,47 @@ func (uh *Repository) Login(ctx *fiber.Ctx) error {
 		"found user": foundUser})
 }
 
+func (uh *Repository) FindUser(userID string, ctx *fiber.Ctx) (models.User, error) {
+	user := &models.User{}
+	err := uh.DB.Where("id = ?", userID).First(user).Error
+	return *user, err
+}
+
 func (uh *Repository) ViewInfo(ctx *fiber.Ctx) error {
 	userID := ctx.Params("id")
-	user := &models.User{}
 	if err := utils.MatchUserTypeToUID(ctx, userID); err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
 	}
 
-	err := uh.DB.Where("id = ?", userID).First(user).Error
+	user, err := uh.FindUser(userID, ctx)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "user not found")
 	}
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "information",
-		"data":    user})
+		"data": user})
 }
 
 func (uh *Repository) UpdateInfo(ctx *fiber.Ctx) error {
+	userID := ctx.Params("id")
+	if err := utils.MatchUserTypeToUID(ctx, userID); err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Update failed")
+	}
+
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "Update Information Successfully"})
 }
 
+// Sua sau
 func (uh *Repository) DeleteUser(ctx *fiber.Ctx) error {
-	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "Delete User Successfully"})
+	user := models.User{}
+	id := ctx.Params("id")
+	if id == "" {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "id cannot be empty")
+	}
+	err := uh.DB.Where("id = ?", id).Delete(&user)
+	if err.Error != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "could not delete user")
+	}
+	utils.HandleErrorResponse(ctx, http.StatusOK, "delete user successfull")
+	return nil
 }
