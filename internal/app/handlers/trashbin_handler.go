@@ -37,24 +37,54 @@ func (th *Repository) CreateTrashBin(ctx *fiber.Ctx) error {
 		"message": "create trash bin successfully"})
 }
 
+func (th *Repository) FindTrashbin(trashBinID string, ctx *fiber.Ctx) (models.TrashBin, error) {
+	trashBin := &models.TrashBin{}
+	err := th.DB.Where("id = ?", trashBinID).First(trashBin).Error
+	return *trashBin, err
+}
+
 func (th *Repository) ReadTrashBin(ctx *fiber.Ctx) error {
 	trashBinID := ctx.Params("id")
 	if err := utils.MatchUserTypeToUID(ctx, trashBinID); err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
 	}
-	trashBin := models.TrashBin{}
-	err := th.DB.Where("id = ?", trashBinID).First(trashBin).Error
+
+	trashBin, err := th.FindTrashbin(trashBinID, ctx)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "trash bin not found")
 	}
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"level":   trashBin.TrashLevel,
-		"info":    trashBin.Location,
-		"message": "create trash bin successfully"})
+		"level":    trashBin.TrashLevel,
+		"location": trashBin.Location,
+		"message":  "create trash bin successfully"})
 }
 func (th *Repository) UpdateTrashBin(ctx *fiber.Ctx) error {
-	return nil
+	trashBinID := ctx.Params("id")
+	if err := utils.MatchUserTypeToUID(ctx, trashBinID); err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
+	}
+
+	trashBin, err := th.FindTrashbin(trashBinID, ctx)
+	if err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "trashBin not found")
+	}
+	ctx.BodyParser(&trashBin)
+	th.DB.Save(&trashBin)
+
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    trashBin,
+		"message": "Update Information Successfully"})
 }
 func (th *Repository) DeleteTrashBin(ctx *fiber.Ctx) error {
+	trashBin := models.TrashBin{}
+	id := ctx.Params("id")
+	if id == "" {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "id cannot be empty")
+	}
+	err := th.DB.Where("id = ?", id).Delete(&trashBin)
+	if err.Error != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "could not delete trashBin")
+	}
+	utils.HandleErrorResponse(ctx, http.StatusOK, "delete trashBin successfull")
 	return nil
 }
