@@ -50,6 +50,9 @@ func main() {
 	// print(db)
 	app := fiber.New()
 	routes.UserRoutes(app, repo)
+	routes.TrashBinRoutes(app, repo)
+	routes.ReportRoutes(app, repo)
+	routes.TransactionRoutes(app, repo)
 	app.Listen(":3000")
 
 }
