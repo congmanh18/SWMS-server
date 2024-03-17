@@ -91,8 +91,15 @@ func (uh *Repository) UpdateInfo(ctx *fiber.Ctx) error {
 	if err := utils.MatchUserTypeToUID(ctx, userID); err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Update failed")
 	}
+	user, err := uh.FindUser(userID, ctx)
+	if err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "user not found")
+	}
+	ctx.BodyParser(&user)
+	uh.DB.Save(&user)
 
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    user,
 		"message": "Update Information Successfully"})
 }
 
