@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/websocket/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -49,6 +50,12 @@ func main() {
 
 	// print(db)
 	app := fiber.New()
+
+	// WebSocket endpoint
+	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
+		// Code xử lý kết nối WebSocket ở đây
+	}))
+
 	routes.UserRoutes(app, repo)
 	routes.TrashBinRoutes(app, repo)
 	routes.ReportRoutes(app, repo)
