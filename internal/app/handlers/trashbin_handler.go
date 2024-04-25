@@ -69,7 +69,7 @@ func (th *Repository) ReadTrashBin(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"level":    trashBin.TrashLevel,
 		"location": trashBin.Location,
-		"message":  "create trash bin successfully"})
+		"message":  "read trash bin successfully"})
 }
 func (th *Repository) UpdateTrashBin(ctx *fiber.Ctx) error {
 	trashBinID := ctx.Params("id")
@@ -108,7 +108,6 @@ type WebSocketMessage struct {
 	Data   interface{} `json:"data"`
 }
 
-// Hàm xử lý WebSocket để đọc thông tin từ trash bin
 func (th *Repository) WebSocketReadTrashBin(c *websocket.Conn) {
 	// Lấy ID của trash bin từ thông điệp WebSocket
 	var message WebSocketMessage

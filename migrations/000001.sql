@@ -18,10 +18,20 @@ CREATE TABLE "users" (
   "updated_at" TIMESTAMPTZ NOT NULL
 );
 
+CREATE TABLE area (
+  "id" text PRIMARY KEY,
+  "name" text,
+  "address" text,
+  "created_at" TIMESTAMPTZ NOT NULL,
+  "updated_at" TIMESTAMPTZ NOT NULL
+);
+
 CREATE TABLE "trash_bins" (
   "id" text PRIMARY KEY,
   "trash_level" decimal(5,2),
-  "location" text,
+  "address" text,
+  "area_id" text,
+  FOREIGN KEY ("area_id") REFERENCES "area" ("id"),
   "created_at" TIMESTAMPTZ NOT NULL,
   "updated_at" TIMESTAMPTZ NOT NULL
 );
@@ -75,3 +85,4 @@ DROP TABLE transactions;
 DROP TABLE trash_bins;
 DROP TABLE reports;
 DROP TABLE users;
+DROP TABLE area;

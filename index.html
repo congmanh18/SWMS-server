@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h2>WebSocket Test Form</h2>
+    <form id="updateForm">
+        <label for="trashBinID">Trash Bin ID:</label>
+        <input type="text" id="trashBinID" name="trashBinID"><br><br>
+        <label for="trashLevel">Trash Level:</label>
+        <input type="text" id="trashLevel" name="trashLevel"><br><br>
+        <button type="submit">Update Trash Bin</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('updateForm');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const trashBinID = document.getElementById('trashBinID').value;
+            const trashLevel = document.getElementById('trashLevel').value;
+
+            const message = {
+                action: 'update',
+                data: {
+                    id: trashBinID,
+                    trashLevel: trashLevel
+                }
+            };
+
+            try {
+                const socket = new WebSocket('ws://localhost:3000/ws/trashBin/cfae0c41-d0f3-4fbb-84f7-b8472c6f1e94');
+                socket.addEventListener('open', function(event) {
+                    console.log('WebSocket connection opened');
+                    socket.send(JSON.stringify(message));
+                });
+                socket.addEventListener('message', function(event) {
+                    console.log('Message from server:', event.data);
+                    const response = JSON.parse(event.data);
+                    if (response.action === 'update_success') {
+                        alert('Trash bin updated successfully');
+                    } else if (response.action === 'error') {
+                        alert('Error: ' + response.data);
+                    }
+                    socket.close();
+                });
+                socket.addEventListener('error', function(event) {
+                    console.error('WebSocket error:', event);
+                    alert('WebSocket error');
+                });
+            } catch (error) {
+                console.error('WebSocket connection error:', error);
+                alert('WebSocket connection error');
+            }
+        });
+    </script>
+</body>
+</html>
