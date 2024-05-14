@@ -58,19 +58,26 @@ func (th *Repository) FindTrashbin(trashBinID string) (*models.TrashBin, error) 
 
 func (th *Repository) ReadTrashBin(ctx *fiber.Ctx) error {
 	trashBinID := ctx.Params("id")
-	if err := utils.MatchUserTypeToUID(ctx, trashBinID); err != nil {
-		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
-	}
-
 	trashBin, err := th.FindTrashbin(trashBinID)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "trash bin not found")
 	}
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"level":    trashBin.TrashLevel,
-		"location": trashBin.Location,
-		"message":  "read trash bin successfully"})
+		"level":   trashBin.TrashLevel,
+		"message": "read trash bin successfully"})
 }
+
+func (th *Repository) ReadListTrashbin(ctx *fiber.Ctx) error {
+	var list []models.TrashBin
+	if err := th.DB.Find(&list).Error; err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "Failed to fetch list of trash bins")
+	}
+
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    list,
+		"message": "Successfully fetched list of trash bins"})
+}
+
 func (th *Repository) UpdateTrashBin(ctx *fiber.Ctx) error {
 	trashBinID := ctx.Params("id")
 	if err := utils.MatchUserTypeToUID(ctx, trashBinID); err != nil {

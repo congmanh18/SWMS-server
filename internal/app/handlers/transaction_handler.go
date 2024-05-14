@@ -43,10 +43,6 @@ func (th *Repository) FindTransaction(transactionID string, ctx *fiber.Ctx) (mod
 
 func (th *Repository) ReadTransaction(ctx *fiber.Ctx) error {
 	transactionID := ctx.Params("id")
-	if err := utils.MatchUserTypeToUID(ctx, transactionID); err != nil {
-		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
-	}
-
 	transaction, err := th.FindTransaction(transactionID, ctx)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "transaction not found")
@@ -55,6 +51,18 @@ func (th *Repository) ReadTransaction(ctx *fiber.Ctx) error {
 		"info":    transaction,
 		"message": "create transaction successfully"})
 }
+
+func (th *Repository) ReadListTransaction(ctx *fiber.Ctx) error {
+	var list []models.Transaction
+	if err := th.DB.Find(&list).Error; err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "Failed to fetch list of transaction")
+	}
+
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    list,
+		"message": "Successfully fetched list of transaction"})
+}
+
 func (th *Repository) UpdateTransaction(ctx *fiber.Ctx) error {
 	transactionID := ctx.Params("id")
 	if err := utils.MatchUserTypeToUID(ctx, transactionID); err != nil {

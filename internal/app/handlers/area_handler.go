@@ -28,7 +28,7 @@ func (th *Repository) CreateArea(ctx *fiber.Ctx) error {
 
 	err = th.DB.Create(&area).Error
 	if err != nil {
-		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Could not create trash bin")
+		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Could not create area")
 	}
 
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
@@ -44,10 +44,6 @@ func (th *Repository) FindArea(areaID string, ctx *fiber.Ctx) (models.Area, erro
 
 func (th *Repository) ReadArea(ctx *fiber.Ctx) error {
 	areaID := ctx.Params("id")
-	if err := utils.MatchUserTypeToUID(ctx, areaID); err != nil {
-		return utils.HandleErrorResponse(ctx, http.StatusBadRequest, "Request Get failed")
-	}
-
 	area, err := th.FindArea(areaID, ctx)
 	if err != nil {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "area not found")
@@ -55,8 +51,20 @@ func (th *Repository) ReadArea(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"name":         area.Name,
 		"area address": area.Address,
-		"message":      "create area successfully"})
+		"message":      "Successfully fetched area"})
 }
+
+func (th *Repository) ReadListArea(ctx *fiber.Ctx) error {
+	var list []models.Area
+	if err := th.DB.Find(&list).Error; err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "Failed to fetch list of area")
+	}
+
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    list,
+		"message": "Successfully fetched list of area"})
+}
+
 func (th *Repository) UpdateArea(ctx *fiber.Ctx) error {
 	areaID := ctx.Params("id")
 	if err := utils.MatchUserTypeToUID(ctx, areaID); err != nil {

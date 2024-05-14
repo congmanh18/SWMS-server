@@ -11,6 +11,7 @@ func AreaRoutes(app *fiber.App, repository *handlers.Repository) {
 
 	app.Post("/area/create", handler.Repository.CreateArea)
 	app.Get("/area/:id", handler.Repository.ReadArea)
+	app.Get("/area", handler.Repository.ReadListArea)
 	app.Put("/area/:id", handler.Repository.UpdateArea)
 	app.Delete("/area/:id", handler.Repository.DeleteArea)
 }

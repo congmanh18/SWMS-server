@@ -11,6 +11,7 @@ func TransactionRoutes(app *fiber.App, repository *handlers.Repository) {
 
 	app.Post("/transaction/create", handler.Repository.CreateTransaction)
 	app.Get("/transaction/:id", handler.Repository.ReadTransaction)
+	app.Get("/transaction/", handler.Repository.ReadListTransaction)
 	app.Put("/transaction/:id", handler.Repository.UpdateTransaction)
 	app.Delete("/transaction/:id", handler.Repository.DeleteTransaction)
 }

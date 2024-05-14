@@ -53,7 +53,6 @@ func main() {
 	//socket xem sau
 	routes.UserRoutes(app, repo)
 	routes.TrashBinRoutes(app, repo)
-	routes.ReportRoutes(app, repo)
 	routes.TransactionRoutes(app, repo)
 	routes.AreaRoutes(app, repo)
 

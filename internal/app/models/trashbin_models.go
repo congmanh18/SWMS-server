@@ -10,7 +10,7 @@ type TrashBin struct {
 	ID         string    `json:"id" gorm:"primaryKey"`
 	TrashLevel *float32  `json:"trash_level"` // chua biet
 	Address    *string   `json:"address"`
-	Location   *string   `json:"location_id"`
+	AreaID     *string   `json:"area_id"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }

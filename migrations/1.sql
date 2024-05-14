@@ -1,3 +1,4 @@
+-- +migrate Up
 CREATE TABLE "users" (
   "id" text PRIMARY KEY,
   "first_name" text,
@@ -6,17 +7,21 @@ CREATE TABLE "users" (
   "gender" text NOT NULL,
   "role_name" text NOT NULL,
   "date_of_birth" date,
-  "nationality" text,
-  "cin" char(12),
-  "poo" text,
-  "por" text,
-  "email" text UNIQUE,
-  "username" text UNIQUE, 
-  "phone" text UNIQUE NOT NULL,
+  "email" text,
+  "username" text, 
+  "phone" text ,
   "password" text,
   "category" text NOT NULL,
-  "token" text UNIQUE,
-  "refresh_token" text UNIQUE,
+  "token" text,
+  "refresh_token" text,
+  "created_at" TIMESTAMPTZ NOT NULL,
+  "updated_at" TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE areas (
+  "id" text PRIMARY KEY,
+  "name" text,
+  "address" text,
   "created_at" TIMESTAMPTZ NOT NULL,
   "updated_at" TIMESTAMPTZ NOT NULL
 );
@@ -24,18 +29,12 @@ CREATE TABLE "users" (
 CREATE TABLE "trash_bins" (
   "id" text PRIMARY KEY,
   "trash_level" decimal(5,2),
-  "location" text,
+  "address" text,
+  "area_id" text,
+  FOREIGN KEY ("area_id") REFERENCES "areas" ("id"),
   "created_at" TIMESTAMPTZ NOT NULL,
   "updated_at" TIMESTAMPTZ NOT NULL
-);
-
-CREATE TABLE reports (
-  "id" text PRIMARY KEY,
-  "description" text,
-  "transaction_ids" text[] NOT NULL,
-  "created_at" TIMESTAMPTZ NOT NULL,
-  "updated_at" TIMESTAMPTZ NOT NULL
-);
+);  
 
 CREATE TABLE "transactions" (
   "id" text PRIMARY KEY,
@@ -44,7 +43,6 @@ CREATE TABLE "transactions" (
   "report_id" text,
   FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
   FOREIGN KEY ("trash_bin_id") REFERENCES "trash_bins" ("id"),
-  FOREIGN KEY ("report_id") REFERENCES "reports" ("id"),
   "updated_at" TIMESTAMPTZ NOT NULL,
   "created_at" TIMESTAMPTZ NOT NULL
 );
@@ -69,3 +67,12 @@ CREATE TABLE user_roles (
   FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
   FOREIGN KEY ("role_id") REFERENCES "roles" ("id")
 );
+
+-- +migrate Down
+DROP TABLE user_roles;
+DROP TABLE roles;
+DROP TABLE permission;
+DROP TABLE transactions;
+DROP TABLE trash_bins;
+DROP TABLE users;
+DROP TABLE areas;

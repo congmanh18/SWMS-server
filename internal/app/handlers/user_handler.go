@@ -66,6 +66,17 @@ func (uh *Repository) Login(ctx *fiber.Ctx) error {
 		"found user": foundUser})
 }
 
+func (th *Repository) ReadListUser(ctx *fiber.Ctx) error {
+	var list []models.User
+	if err := th.DB.Find(&list).Error; err != nil {
+		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "Failed to fetch list of user")
+	}
+
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"info":    list,
+		"message": "Successfully fetched list of user"})
+}
+
 func (uh *Repository) FindUser(userID string, ctx *fiber.Ctx) (models.User, error) {
 	user := &models.User{}
 	err := uh.DB.Where("id = ?", userID).First(user).Error

@@ -1,3 +1,0 @@
-B1: migrate create -ext sql -dir migrations -seq init
-
-Bỏ Không dùng cách này

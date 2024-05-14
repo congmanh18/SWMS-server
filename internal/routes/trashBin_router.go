@@ -11,6 +11,7 @@ func TrashBinRoutes(app *fiber.App, repository *handlers.Repository) {
 	handler := &handlers.Handler{Repository: repository}
 
 	app.Post("/trashBin/create", handler.Repository.CreateTrashBin)
+	app.Get("/trashBin", handler.Repository.ReadListTrashbin)
 	app.Get("/trashBin/:id", handler.Repository.ReadTrashBin)
 	app.Delete("/trashBin/:id", handler.Repository.DeleteTrashBin)
 	app.Get("ws/trashBin/:id", websocket.New(func(c *websocket.Conn) {
