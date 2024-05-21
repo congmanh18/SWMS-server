@@ -63,7 +63,7 @@ func (th *Repository) ReadTrashBin(ctx *fiber.Ctx) error {
 		return utils.HandleErrorResponse(ctx, http.StatusInternalServerError, "trash bin not found")
 	}
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"level":   trashBin.TrashLevel,
+		"level":   trashBin.Level,
 		"message": "read trash bin successfully"})
 }
 
