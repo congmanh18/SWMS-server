@@ -56,6 +56,6 @@ func main() {
 	routes.TransactionRoutes(app, repo)
 	routes.AreaRoutes(app, repo)
 
-	app.Listen(":3000")
+	app.Listen(":8080")
 
 }
