@@ -68,15 +68,15 @@ Hệ thống được thiết kế theo mô hình Microservices, đảm bảo t�
     sudo apt update
     sudo apt install nodejs npm
     ```
-3. **Cài đặt Flutter**:
+3. **Cài đặt React native**:
     ```sh
-    sudo snap install flutter --classic
+    sudo 
     ```
 4. **Clone các repository của dự án**:
     ```sh
-    git clone https://github.com/your-repo/backend
-    git clone https://github.com/your-repo/frontend
-    git clone https://github.com/your-repo/mobile-app
+    git clone https://github.com/congmanh18/SWMS-server.git
+    git clone https://github.com/congmanh18/SWMS-web.git
+    git clone https://github.com/congmanh18/SWMS-mobile.git
     ```
 5. **Cấu hình các biến môi trường và database**:
     ```sh
@@ -144,7 +144,7 @@ Cung cấp chi tiết về quá trình chuyển giao công nghệ hệ thống q
 
 # Golang
 
-## API Reference - test localhost:3000
+## API Reference - test localhost:8080
 
 #### Sign Up
 
