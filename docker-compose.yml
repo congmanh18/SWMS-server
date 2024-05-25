@@ -19,8 +19,6 @@ services:
       - DATABASE_URL=postgres://postgres:11111111@db:5432/golang?sslmode=disable
     networks:
       - custom-network
-    entrypoint: ["./wait-for-it.sh", "db:5432", "--", "/go/bin/app"]
-
 
   db:
     container_name: db

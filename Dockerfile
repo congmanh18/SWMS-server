@@ -17,6 +17,10 @@ WORKDIR $GOPATH/src/smart-waste-system
 
 # Copy everything from the current directory to the working directory in the container
 COPY . .
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Run migrations and then start the application
+CMD ["sh", "-c", "sql-migrate up -env=development && ./app"]
 
 RUN go mod init smart-waste-system
 
@@ -31,6 +35,7 @@ RUN go get gorm.io/driver/postgres
 RUN go get gorm.io/gorm
 RUN go get github.com/go-playground/validator
 RUN go get github.com/gofiber/websocket/v2
+RUN go install github.com/rubenv/sql-migrate/...@latest
 
 
 # Install necessary dependencies
@@ -42,7 +47,6 @@ RUN GOOS=linux go build -o app .
 # Expose the application port
 EXPOSE 8080
 
-# Command to run the executable
-CMD ["./app"]
+
 
 

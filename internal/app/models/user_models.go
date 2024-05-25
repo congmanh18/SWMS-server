@@ -16,7 +16,11 @@ type User struct {
 	LastName     *string   `json:"last_name"`
 	Gender       *string   `json:"gender"`
 	RoleName     *string   `json:"role_name"`
-	DateOfBirth  time.Time `json:"date_of_birth"`
+	DateOfBirth  *string   `json:"date_of_birth"`
+	Nationality  *string   `json:"nationality"`
+	POR          *string   `json:"por"`
+	POO          *string   `json:"poo"`
+	CIN          *string   `json:"cin"`
 	Email        *string   `json:"email"`
 	Username     *string   `json:"username"` // validate: user
 	Phone        string    `json:"phone" validate:"required"`

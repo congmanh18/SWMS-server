@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -49,6 +50,12 @@ func main() {
 
 	// print(db)
 	app := fiber.New()
+
+	// Enable CORS for all origins
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Update this to allow only your frontend origin
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	//socket xem sau
 	routes.UserRoutes(app, repo)
