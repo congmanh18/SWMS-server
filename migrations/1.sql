@@ -32,11 +32,11 @@ CREATE TABLE areas (
 
 CREATE TABLE "trash_bins" (
   "id" text PRIMARY KEY,
-  "weight" decimal(5,2),
-  "level" decimal(5,2),
+  "weight" text,
+  "level" text,
   "address" text,
-  "latitude" decimal(10,8),
-  "longitude" decimal(10,8),
+  "latitude" text,
+  "longitude" text,
   "area_id" text,
   FOREIGN KEY ("area_id") REFERENCES "areas" ("id"),
   "created_at" TIMESTAMPTZ NOT NULL,

@@ -8,11 +8,11 @@ import (
 
 type TrashBin struct {
 	ID        string    `json:"id" gorm:"primaryKey"`
-	Weight    *float32  `json:"weight"`
-	Level     *float32  `json:"level"`
+	Weight    *string   `json:"weight"`
+	Level     *string   `json:"level"`
 	Address   *string   `json:"address"`
-	Latitude  *float64  `json:"latitude"`
-	Longitude *float64  `json:"longitude"`
+	Latitude  *string   `json:"latitude"`
+	Longitude *string   `json:"longitude"`
 	AreaID    *string   `json:"area_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
